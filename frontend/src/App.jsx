@@ -7,6 +7,9 @@ import Home from "./pages/Home";
 import AddBurger from "./pages/AddBurger";
 import Checkout from "./pages/Checkout";
 import Orders from "./pages/Orders";
+import PrivateRoute from "./components/PrivateRoute";
+import OnlyAdminPrivateRoute from "./components/OnlyAdminPrivateRoute";
+import PageNotFound from "./components/PageNotFound";
 
 function App() {
   return (
@@ -15,11 +18,15 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/add-burger" element={<AddBurger />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="*" element={<div>Not Found</div>} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/orders" element={<Orders />} />
+        </Route>
+        <Route element={<OnlyAdminPrivateRoute />}>
+          <Route path="/add-burger" element={<AddBurger />} />
+        </Route>
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>
   );
