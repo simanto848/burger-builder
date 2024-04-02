@@ -11,6 +11,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import OnlyAdminPrivateRoute from "./components/OnlyAdminPrivateRoute";
 import PageNotFound from "./components/PageNotFound";
 import Profile from "./pages/Profile";
+import PaymentSuccess from "./components/PaymentSuccess";
 
 function App() {
   return (
@@ -24,6 +25,10 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/payment/success/:transactionId"
+            element={<PaymentSuccess />}
+          />
         </Route>
         <Route element={<OnlyAdminPrivateRoute />}>
           <Route path="/add-burger" element={<AddBurger />} />

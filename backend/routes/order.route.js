@@ -5,6 +5,9 @@ import {
   cancelOrder,
   createOrder,
   deleteOrder,
+  handleSuccess,
+  handleFailure,
+  handleCancellation,
 } from "../controllers/order.controller.js";
 import { verifyUser } from "../middleware/verifyUser.js";
 
@@ -15,5 +18,8 @@ router.get("/", verifyUser, getAllOrders);
 router.get("/:orderId", verifyUser, getOrderById);
 router.post("/:orderId/cancel", verifyUser, cancelOrder);
 router.delete("/", verifyUser, deleteOrder);
+router.post("/payment/success/:transactionId", handleSuccess);
+router.post("/payment/failure/:transactionId", handleFailure);
+router.post("/payment/cancel/:transactionId", handleCancellation);
 
 export default router;

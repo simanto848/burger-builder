@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { Button, Modal, Form, Input, Radio, Select } from "antd";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function Checkout() {
   const [addresses, setAddresses] = useState([]);
@@ -11,6 +12,7 @@ export default function Checkout() {
   const [totalAmount, setTotalAmount] = useState(0);
   const { currentUser } = useSelector((state) => state.user);
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedTotalAmount = localStorage.getItem("totalAmount");
@@ -83,31 +85,48 @@ export default function Checkout() {
     }
 
     try {
-      const response = await fetch("/api/order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          addressId: selectedAddress,
-          paymentMethod: paymentMethod,
-          totalAmount: totalAmount,
-          productId: localStorage.getItem("selectedBurger"),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to place order!");
-      }
-
-      console.log(response);
-
-      const data = await response.json();
-
       if (paymentMethod === "PayNow") {
-        toast.success("Payment successful. Your order is being processed.");
+        const response = await fetch("/api/order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            addressId: selectedAddress,
+            paymentMethod: paymentMethod,
+            totalAmount: totalAmount,
+            productId: localStorage.getItem("selectedBurger"),
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to place order!");
+        }
+
+        const data = await response.json();
+
+        window.location.href = data.paymentUrl;
       } else {
+        const response = await fetch("/api/order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            addressId: selectedAddress,
+            paymentMethod: paymentMethod,
+            totalAmount: totalAmount,
+            productId: localStorage.getItem("selectedBurger"),
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to place order!");
+        }
+
         toast.success("Your order will be delivered shortly.");
+
+        navigate("/orders");
       }
     } catch (error) {
       toast.error(error.message);
