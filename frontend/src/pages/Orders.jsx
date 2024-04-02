@@ -95,6 +95,10 @@ const Orders = () => {
       dataIndex: "status",
     },
     {
+      title: "Payment Status",
+      dataIndex: "paymentStatus",
+    },
+    {
       title: "Actions",
       render: (_, record) => (
         <Button
@@ -116,6 +120,7 @@ const Orders = () => {
       ? `${order.addressId.street}, ${order.addressId.city}, ${order.addressId.country}`
       : "No address available",
     status: order.status,
+    paymentStatus: order.paymentStatus, // Include payment status in the data
   }));
 
   const rowSelection = {
@@ -140,7 +145,7 @@ const Orders = () => {
       <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
       <Modal
         title="Confirm Cancel Order"
-        visible={cancelModalVisible}
+        open={cancelModalVisible}
         onOk={handleCancelOrder}
         onCancel={() => setCancelModalVisible(false)}
       >
@@ -148,7 +153,7 @@ const Orders = () => {
       </Modal>
       <Modal
         title="Confirm Delete Orders"
-        visible={deleteModalVisible}
+        open={deleteModalVisible}
         onOk={handleDeleteOrders}
         onCancel={() => setDeleteModalVisible(false)}
       >

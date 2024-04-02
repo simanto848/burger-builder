@@ -12,6 +12,8 @@ import OnlyAdminPrivateRoute from "./components/OnlyAdminPrivateRoute";
 import PageNotFound from "./components/PageNotFound";
 import Profile from "./pages/Profile";
 import PaymentSuccess from "./components/PaymentSuccess";
+import PaymentFailed from "./components/PaymentFailed";
+import PaymentCancel from "./components/PaymentCancel";
 
 function App() {
   return (
@@ -28,6 +30,14 @@ function App() {
           <Route
             path="/payment/success/:transactionId"
             element={<PaymentSuccess />}
+          />
+          <Route
+            path="/payment/failure/:transactionId"
+            element={<PaymentFailed />}
+          />
+          <Route
+            path="/payment/cancel/:transactionId"
+            element={<PaymentCancel />}
           />
         </Route>
         <Route element={<OnlyAdminPrivateRoute />}>

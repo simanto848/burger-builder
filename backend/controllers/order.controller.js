@@ -36,8 +36,8 @@ export const createOrder = async (req, res) => {
       currency: "BDT",
       tran_id: transactionId,
       success_url: `http://localhost:5000/api/order/payment/success/${transactionId}`,
-      fail_url: "http://localhost:5000/api/order/payment/failure",
-      cancel_url: "http://localhost:5000/api/order/payment/cancel",
+      fail_url: `http://localhost:5000/api/order/payment/failure/${transactionId}`,
+      cancel_url: `http://localhost:5000/api/order/payment/cancel/${transactionId}`,
       ipn_url: "http://yoursite.com/ipn",
       shipping_method: "Courier",
       product_name: "Computer.",
@@ -106,7 +106,15 @@ export const handleSuccess = async (req, res) => {
 export const handleFailure = async (req, res) => {
   try {
     const { transactionId } = req.params;
-    res.status(400).json({ message: "Payment failed!" });
+
+    const result = await Order.deleteOne({ transactionId });
+
+    if (!result || result.deletedCount === 0) {
+      return res
+        .status(400)
+        .json({ message: "Payment not found or already deleted!" });
+    }
+    res.redirect("http://localhost:5173/payment/failure/" + transactionId);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
@@ -116,7 +124,15 @@ export const handleFailure = async (req, res) => {
 export const handleCancellation = async (req, res) => {
   try {
     const { transactionId } = req.params;
-    res.status(400).json({ message: "Payment cancelled!" });
+
+    const result = await Order.deleteOne({ transactionId });
+
+    if (!result || result.deletedCount === 0) {
+      return res
+        .status(400)
+        .json({ message: "Payment not found or already deleted!" });
+    }
+    res.redirect("http://localhost:5173/payment/cancel/" + transactionId);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
@@ -146,7 +162,7 @@ export const getAllOrders = async (req, res) => {
     const userId = req.user.id;
 
     const orders = await Order.find({ userId })
-      .select("userId totalAmount status paymentMethod")
+      .select("userId totalAmount status paymentMethod paymentStatus createdAt")
       .populate({
         path: "productId",
         select: "name",
