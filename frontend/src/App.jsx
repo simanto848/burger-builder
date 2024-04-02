@@ -10,6 +10,7 @@ import Orders from "./pages/Orders";
 import PrivateRoute from "./components/PrivateRoute";
 import OnlyAdminPrivateRoute from "./components/OnlyAdminPrivateRoute";
 import PageNotFound from "./components/PageNotFound";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
         <Route element={<OnlyAdminPrivateRoute />}>
           <Route path="/add-burger" element={<AddBurger />} />

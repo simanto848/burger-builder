@@ -1,19 +1,49 @@
 .Navigation {
-  margin-bottom: 20px;
+  background-color: #d6770f;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
 }
 
 .Brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
   color: #f0d290;
-  font-size: 15px;
-  margin-top: -20px;
+  font-size: 18px;
+}
+
+.Brand .Logo {
+  width: 40px;
+  margin-right: 10px;
+}
+
+.NavLinks {
+  display: flex;
+  align-items: center;
 }
 
 .NavLink {
   text-decoration: none;
-  color: black;
-  margin-top: -25px;
+  color: white;
+  font-size: 16px;
+  margin-left: 20px;
 }
 
 .NavLink:hover {
-  color: wheat;
+  color: #f0d290;
+}
+
+.LogoutButton {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.LogoutButton:hover {
+  color: #f0d290;
 }

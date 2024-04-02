@@ -1,4 +1,4 @@
-import { Navbar, NavItem } from "reactstrap";
+import { Navbar, Nav, NavItem } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.png";
@@ -29,24 +29,27 @@ export default function Header() {
   };
 
   return (
-    <Navbar
-      className="Navigation"
-      style={{ backgroundColor: "#d6770f", height: "70px" }}
-    >
-      <Link to="/home" className="mr-auto ml-md-5 Brand">
-        <img src={Logo} alt="Logo" width="100px" />
+    <Navbar expand="md" className="Navigation">
+      <Link to="/home" className="Brand">
+        <img src={Logo} alt="Logo" className="Logo" />
         Home
       </Link>
-      <div className="NavLinks">
+      <Nav className="NavLinks">
         {currentUser && (
           <NavItem>
-            <Link to="/orders">Orders</Link>
+            <Link to="/orders" className="NavLink">
+              Orders
+            </Link>
+            <Link to="/profile" className="NavLink">
+              Profile
+            </Link>
           </NavItem>
         )}
         {currentUser && currentUser.role === "admin" && (
           <NavItem>
-            <Link to="/add-burger">Add Burger</Link>
-            <Link to="/orders">Orders</Link>
+            <Link to="/add-burger" className="NavLink">
+              Add Burger
+            </Link>
           </NavItem>
         )}
         {currentUser && (
@@ -56,7 +59,7 @@ export default function Header() {
             </button>
           </NavItem>
         )}
-      </div>
+      </Nav>
     </Navbar>
   );
 }

@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [cancelModalVisible, setCancelModalVisible] = useState(false);
   const [cancelOrderId, setCancelOrderId] = useState(null);
 
@@ -20,14 +19,6 @@ const Orders = () => {
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
-  };
-
-  const start = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setSelectedRowKeys([]);
-      setLoading(false);
-    }, 1000);
   };
 
   const onSelectChange = (newSelectedRowKeys) => {
@@ -48,7 +39,7 @@ const Orders = () => {
       console.log(response);
       if (response.ok) {
         message.success("Order cancelled successfully");
-        fetchOrders(); // Refresh order list
+        fetchOrders();
       } else {
         throw new Error("Failed to cancel order");
       }
@@ -56,18 +47,18 @@ const Orders = () => {
       console.error("Error cancelling order:", error);
       message.error(error.message || "Failed to cancel order");
     } finally {
-      setCancelModalVisible(false); // Close the modal
+      setCancelModalVisible(false);
     }
   };
 
   const showCancelModal = (orderId) => {
-    setCancelOrderId(orderId); // Set the order ID to be cancelled
-    setCancelModalVisible(true); // Show the modal
+    setCancelOrderId(orderId);
+    setCancelModalVisible(true);
   };
 
   const hideCancelModal = () => {
-    setCancelOrderId(null); // Clear the order ID
-    setCancelModalVisible(false); // Close the modal
+    setCancelOrderId(null);
+    setCancelModalVisible(false);
   };
 
   const columns = [
@@ -83,7 +74,7 @@ const Orders = () => {
       title: "Address",
       dataIndex: "address",
       render: (address) =>
-        `${address.street}, ${address.city}, ${address.country}`, // Format the address
+        `${address.street}, ${address.city}, ${address.country}`,
     },
     {
       title: "Order Status",
@@ -102,10 +93,12 @@ const Orders = () => {
 
   const data = orders.map((order) => ({
     key: order._id,
-    burgerName: order.productId.name, // Retrieve product name
+    burgerName: order.productId.name,
     totalAmount: `$${order.totalAmount}`,
-    address: order.addressId, // Assuming addressId corresponds to the address
-    status: order.status, // Add order status
+    address: order.addressId
+      ? `${order.addressId.street}, ${order.addressId.city}, ${order.addressId.country}`
+      : "No address available",
+    status: order.status,
   }));
 
   const hasSelected = selectedRowKeys.length > 0;
@@ -117,14 +110,6 @@ const Orders = () => {
           marginBottom: 16,
         }}
       >
-        <Button
-          type="primary"
-          onClick={start}
-          disabled={!hasSelected}
-          loading={loading}
-        >
-          Reload
-        </Button>
         <span
           style={{
             marginLeft: 8,
@@ -135,10 +120,9 @@ const Orders = () => {
       </div>
       <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
 
-      {/* Cancel Order Modal */}
       <Modal
         title="Confirm Cancel Order"
-        visible={cancelModalVisible}
+        open={cancelModalVisible}
         onOk={handleCancelOrder}
         onCancel={hideCancelModal}
         okText="Confirm"

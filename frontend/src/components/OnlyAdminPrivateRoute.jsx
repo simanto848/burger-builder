@@ -6,6 +6,6 @@ export default function OnlyAdminPrivateRoute() {
   return currentUser && currentUser.role === "admin" ? (
     <Outlet />
   ) : (
-    <Navigate to="/sign-in" />
+    <Navigate to="/" />
   );
 }

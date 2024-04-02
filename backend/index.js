@@ -12,6 +12,7 @@ import productRoutes from "./routes/product.route.js";
 import couponRoutes from "./routes/coupon.route.js";
 import addressRoutes from "./routes/address.route.js";
 import orderRoutes from "./routes/order.route.js";
+import userRoutes from "./routes/user.route.js";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use("/api/product", productRoutes);
 app.use("/api/coupon", couponRoutes);
 app.use("/api/address", addressRoutes);
 app.use("/api/order", orderRoutes);
+app.use("/api/user", userRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

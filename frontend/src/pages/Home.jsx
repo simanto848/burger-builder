@@ -182,30 +182,35 @@ export default function Home() {
         />
       </div>
       <div className="ingredients-section">
-        <h2>Add Ingredients</h2>
-        {ingredients.map((ingredient) => (
-          <div key={ingredient.name} className="ingredient">
-            <p>{ingredient.name}</p>
-            <Button
-              color="success"
-              onClick={() => handleIngredientSelect(ingredient.name)}
-              disabled={!selectedBurger}
-            >
-              Add
-            </Button>
-            <Button
-              color="danger"
-              onClick={() => handleIngredientRemove(ingredient)}
-              disabled={!selectedBurger}
-            >
-              Less
-            </Button>
-          </div>
-        ))}
-        <p>Price: {totalAmount} BDT</p>
-        <Button color="success" onClick={orderNow} disabled={!selectedBurger}>
-          Order Now
-        </Button>
+        <div className="card">
+          <h2>Add Ingredients</h2>
+          {ingredients.map((ingredient) => (
+            <div key={ingredient.name} className="ingredient">
+              <p>{ingredient.name}</p>
+              <div className="ingredient-buttons">
+                {" "}
+                <Button
+                  color="success"
+                  onClick={() => handleIngredientSelect(ingredient.name)}
+                  disabled={!selectedBurger}
+                >
+                  Add
+                </Button>
+                <Button
+                  color="danger"
+                  onClick={() => handleIngredientRemove(ingredient)}
+                  disabled={!selectedBurger}
+                >
+                  Less
+                </Button>
+              </div>
+            </div>
+          ))}
+          <p>Price: {totalAmount} BDT</p>
+          <Button color="success" onClick={orderNow} disabled={!selectedBurger}>
+            Order Now
+          </Button>
+        </div>
       </div>
     </div>
   );
