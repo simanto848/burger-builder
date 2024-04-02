@@ -1,5 +1,4 @@
-// burgerService.js
-export async function fetchBurgers() {
+export const fetchBurgers = async () => {
   try {
     const res = await fetch("/api/product");
     const data = await res.json();
@@ -10,4 +9,4 @@ export async function fetchBurgers() {
   } catch (error) {
     throw new Error("Failed to fetch burgers!");
   }
-}
+};

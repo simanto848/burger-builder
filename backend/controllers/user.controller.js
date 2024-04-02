@@ -24,7 +24,6 @@ export const updateUserProfile = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
   } catch (error) {
-    console.log("Error updating user profile:", error);
     return res.status(500).json({ message: "Server Error" });
   }
 };
@@ -71,7 +70,6 @@ export const updatePassword = async (req, res) => {
     const updatedUser = await user.save();
     return res.json({ message: "Password updated successfully" });
   } catch (error) {
-    console.log("Error updating password:", error);
     return res.status(500).json({ message: "Server Error" });
   }
 };

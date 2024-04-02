@@ -1,11 +1,13 @@
-import { Button, Table, message, Modal } from "antd";
 import { useState, useEffect } from "react";
+import { Table, Button, Modal, message } from "antd";
+import toast, { Toaster } from "react-hot-toast";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [cancelModalVisible, setCancelModalVisible] = useState(false);
   const [cancelOrderId, setCancelOrderId] = useState(null);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
   useEffect(() => {
     fetchOrders();
@@ -14,41 +16,19 @@ const Orders = () => {
   const fetchOrders = async () => {
     try {
       const response = await fetch("/api/order");
-      const data = await response.json();
-      setOrders(data);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-    }
-  };
-
-  const onSelectChange = (newSelectedRowKeys) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys);
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  };
-
-  const handleCancelOrder = async () => {
-    try {
-      const response = await fetch(`/api/order/${cancelOrderId}/cancel`, {
-        method: "POST",
-      });
-      console.log(response);
       if (response.ok) {
-        message.success("Order cancelled successfully");
-        fetchOrders();
+        const data = await response.json();
+        setOrders(data);
       } else {
-        throw new Error("Failed to cancel order");
+        throw new Error("Failed to fetch orders");
       }
     } catch (error) {
-      console.error("Error cancelling order:", error);
-      message.error(error.message || "Failed to cancel order");
-    } finally {
-      setCancelModalVisible(false);
+      toast.error(error.message || "Failed to fetch orders");
     }
+  };
+
+  const onSelectChange = (selectedKeys) => {
+    setSelectedRowKeys(selectedKeys);
   };
 
   const showCancelModal = (orderId) => {
@@ -56,9 +36,45 @@ const Orders = () => {
     setCancelModalVisible(true);
   };
 
-  const hideCancelModal = () => {
-    setCancelOrderId(null);
-    setCancelModalVisible(false);
+  const handleCancelOrder = async () => {
+    try {
+      const response = await fetch(`/api/order/${cancelOrderId}/cancel`, {
+        method: "POST",
+      });
+      if (response.ok) {
+        message.success("Order cancelled successfully");
+        fetchOrders();
+      } else {
+        throw new Error("Failed to cancel order");
+      }
+    } catch (error) {
+      message.error(error.message || "Failed to cancel order");
+    } finally {
+      setCancelModalVisible(false);
+    }
+  };
+
+  const handleDeleteOrders = async () => {
+    try {
+      const response = await fetch("/api/order/", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ orderIds: selectedRowKeys }),
+      });
+      if (response.ok) {
+        message.success("Orders deleted successfully");
+        fetchOrders();
+        setSelectedRowKeys([]);
+      } else {
+        throw new Error("Failed to delete orders");
+      }
+    } catch (error) {
+      message.error(error.message || "Failed to delete orders");
+    } finally {
+      setDeleteModalVisible(false);
+    }
   };
 
   const columns = [
@@ -73,18 +89,19 @@ const Orders = () => {
     {
       title: "Address",
       dataIndex: "address",
-      render: (address) =>
-        `${address.street}, ${address.city}, ${address.country}`,
     },
     {
       title: "Order Status",
       dataIndex: "status",
     },
     {
-      title: "Action",
-      key: "action",
+      title: "Actions",
       render: (_, record) => (
-        <Button type="danger" onClick={() => showCancelModal(record.key)}>
+        <Button
+          type="primary"
+          onClick={() => showCancelModal(record.key)}
+          disabled={record.status !== "pending"}
+        >
           Cancel Order
         </Button>
       ),
@@ -101,34 +118,41 @@ const Orders = () => {
     status: order.status,
   }));
 
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
   const hasSelected = selectedRowKeys.length > 0;
 
   return (
     <div>
-      <div
-        style={{
-          marginBottom: 16,
-        }}
-      >
-        <span
-          style={{
-            marginLeft: 8,
-          }}
+      <Toaster />
+      <div style={{ marginBottom: 16 }}>
+        <Button
+          type="primary"
+          onClick={() => setDeleteModalVisible(true)}
+          disabled={!hasSelected}
         >
-          {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
-        </span>
+          Delete Selected Orders
+        </Button>
       </div>
       <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
-
       <Modal
         title="Confirm Cancel Order"
-        open={cancelModalVisible}
+        visible={cancelModalVisible}
         onOk={handleCancelOrder}
-        onCancel={hideCancelModal}
-        okText="Confirm"
-        cancelText="Cancel"
+        onCancel={() => setCancelModalVisible(false)}
       >
         <p>Are you sure you want to cancel this order?</p>
+      </Modal>
+      <Modal
+        title="Confirm Delete Orders"
+        visible={deleteModalVisible}
+        onOk={handleDeleteOrders}
+        onCancel={() => setDeleteModalVisible(false)}
+      >
+        <p>Are you sure you want to delete the selected orders?</p>
       </Modal>
     </div>
   );

@@ -37,3 +37,21 @@ export async function register(user) {
     throw new Error(error.message);
   }
 }
+
+export const handleLogout = async () => {
+  try {
+    localStorage.clear();
+
+    const res = await fetch(`/api/auth/logout`, {
+      method: "GET",
+    });
+    if (res.ok) {
+      return { success: true };
+    } else {
+      throw new Error("Failed to logout");
+    }
+  } catch (error) {
+    console.error(error.message);
+    return { success: false, error: error.message };
+  }
+};

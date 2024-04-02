@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.png";
 import { signOutSuccess } from "../redux/user/userSlice";
+import { handleLogout } from "../services/authService";
 import "./Header.css";
 
 export default function Header() {
@@ -10,21 +11,13 @@ export default function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    try {
-      localStorage.clear();
-
-      const res = await fetch(`/api/auth/logout`, {
-        method: "GET",
-      });
-      if (res.ok) {
-        dispatch(signOutSuccess());
-        navigate("/");
-      } else {
-        console.error("Failed to logout");
-      }
-    } catch (error) {
-      console.error(error.message);
+  const logout = async () => {
+    const result = await handleLogout();
+    if (result.success) {
+      dispatch(signOutSuccess());
+      navigate("/");
+    } else {
+      console.error("Failed to logout");
     }
   };
 
@@ -54,7 +47,7 @@ export default function Header() {
         )}
         {currentUser && (
           <NavItem>
-            <button className="LogoutButton" onClick={handleLogout}>
+            <button className="LogoutButton" onClick={logout}>
               Logout
             </button>
           </NavItem>

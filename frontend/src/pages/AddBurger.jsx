@@ -1,6 +1,7 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import toast, { Toaster } from "react-hot-toast";
+import { addBurger } from "../services/productService";
 import "./Auth.css";
 
 export default function AddBurger() {
@@ -15,22 +16,11 @@ export default function AddBurger() {
   });
 
   const handleSubmit = async (values) => {
-    try {
-      const response = await fetch("/api/product/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        toast.success(data.message);
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error(error.message);
+    const result = await addBurger(values);
+    if (result.success) {
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
     }
   };
 

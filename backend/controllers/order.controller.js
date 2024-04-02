@@ -75,7 +75,6 @@ export const cancelOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
     const userId = req.user.id;
-    console.log(orderId);
 
     const order = await Order.findOne({ _id: orderId, userId });
 
@@ -98,6 +97,30 @@ export const cancelOrder = async (req, res) => {
     res.json({ message: "Order cancelled successfully" });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: "Something went wrong!" });
+  }
+};
+
+export const deleteOrder = async (req, res) => {
+  try {
+    const { orderIds } = req.body;
+    const userId = req.user.id;
+    const orders = await Order.find({ _id: orderIds, userId });
+
+    const canDelete = orders.every(
+      (order) => order.status === "delivered" || order.status === "cancelled"
+    );
+
+    if (!canDelete) {
+      return res.status(400).json({
+        message:
+          "Selected orders cannot be deleted as they are not in 'delivered' or 'cancelled' status.",
+      });
+    }
+
+    await Order.deleteMany({ _id: orderIds, userId });
+    res.json({ message: "Selected orders deleted successfully!" });
+  } catch (error) {
     res.status(500).json({ message: "Something went wrong!" });
   }
 };

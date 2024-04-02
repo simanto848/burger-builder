@@ -170,10 +170,6 @@ export default function Home() {
               src={ingredient.img}
               alt={ingredient.name}
               className="ingredient-image"
-              style={{
-                width: "280px",
-                height: "50px",
-              }}
               onClick={() => handleIngredientRemove(ingredient)}
             />
           ))}
