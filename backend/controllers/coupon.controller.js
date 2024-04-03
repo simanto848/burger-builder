@@ -77,27 +77,22 @@ export const applyCoupon = async (req, res) => {
     const { couponCode } = req.body;
     const userId = req.user.id;
 
-    // Fetch coupon information based on the provided coupon code
     const coupon = await Coupon.findOne({ name: couponCode });
 
     if (!coupon) {
       return res.status(404).json({ message: "Coupon not found" });
     }
 
-    // Check if the user has already used this coupon
     const user = await User.findById(userId);
     if (user.usedCoupons.includes(coupon._id)) {
       return res.status(400).json({ message: "Coupon already used" });
     }
 
-    // If not used, add the coupon to the user's usedCoupons array
     user.usedCoupons.push(coupon._id);
     await user.save();
 
-    // Return the coupon details to the client
     res.status(200).json({ discount: coupon.discount });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: "Something went wrong!" });
   }
 };

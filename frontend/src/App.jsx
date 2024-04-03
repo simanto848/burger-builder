@@ -16,6 +16,7 @@ import PaymentFailed from "./components/PaymentFailed";
 import PaymentCancel from "./components/PaymentCancel";
 import AdminOrders from "./pages/AdminOrders";
 import AddCoupon from "./pages/AddCoupon";
+import Coupons from "./pages/Coupons";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
         <Route element={<OnlyAdminPrivateRoute />}>
           <Route path="/add-burger" element={<AddBurger />} />
           <Route path="/admin-orders" element={<AdminOrders />} />
+          <Route path="/coupons" element={<Coupons />} />
           <Route path="/add-coupon" element={<AddCoupon />} />
         </Route>
         <Route path="*" element={<PageNotFound />} />

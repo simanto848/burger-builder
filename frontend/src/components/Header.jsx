@@ -40,23 +40,17 @@ export default function Header() {
             <Link to="/admin-orders" className="NavLink">
               Orders
             </Link>
-            <Link
-              to="/add-burger"
-              className="NavLink"
-              style={{
-                marginRight: "10px",
-              }}
-            >
+            <Link to="/add-burger" className="NavLink">
               Add Burger
             </Link>
             <Link
-              to="/add-coupon"
+              to="/coupons"
               className="NavLink"
               style={{
                 marginRight: "10px",
               }}
             >
-              Add Coupon
+              Coupons
             </Link>
             <button className="LogoutButton" onClick={logout}>
               Logout
