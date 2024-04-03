@@ -30,9 +30,6 @@ export default function Header() {
       <Nav className="NavLinks">
         {currentUser && (
           <NavItem>
-            <Link to="/orders" className="NavLink">
-              Orders
-            </Link>
             <Link to="/profile" className="NavLink">
               Profile
             </Link>
@@ -40,13 +37,34 @@ export default function Header() {
         )}
         {currentUser && currentUser.role === "admin" && (
           <NavItem>
-            <Link to="/add-burger" className="NavLink">
+            <Link to="/admin-orders" className="NavLink">
+              Orders
+            </Link>
+            <Link
+              to="/add-burger"
+              className="NavLink"
+              style={{
+                marginRight: "10px",
+              }}
+            >
               Add Burger
             </Link>
+            <button className="LogoutButton" onClick={logout}>
+              Logout
+            </button>
           </NavItem>
         )}
-        {currentUser && (
+        {currentUser && currentUser.role !== "admin" && (
           <NavItem>
+            <Link
+              to="/orders"
+              className="NavLink"
+              style={{
+                marginRight: "10px",
+              }}
+            >
+              Orders
+            </Link>
             <button className="LogoutButton" onClick={logout}>
               Logout
             </button>

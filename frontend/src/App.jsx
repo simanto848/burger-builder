@@ -14,6 +14,7 @@ import Profile from "./pages/Profile";
 import PaymentSuccess from "./components/PaymentSuccess";
 import PaymentFailed from "./components/PaymentFailed";
 import PaymentCancel from "./components/PaymentCancel";
+import AdminOrders from "./pages/AdminOrders";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
         </Route>
         <Route element={<OnlyAdminPrivateRoute />}>
           <Route path="/add-burger" element={<AddBurger />} />
+          <Route path="/admin-orders" element={<AdminOrders />} />
         </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>

@@ -1,6 +1,7 @@
 import Order from "../models/Orders.js";
 import Address from "../models/Address.js";
 import SSLCommerzPayment from "sslcommerz-lts";
+import mail from "../helpers/sendMail.js";
 
 export const createOrder = async (req, res) => {
   try {
@@ -157,7 +158,7 @@ export const getOrderById = async (req, res) => {
   }
 };
 
-export const getAllOrders = async (req, res) => {
+export const getUserOrders = async (req, res) => {
   try {
     const userId = req.user.id;
 
@@ -172,10 +173,30 @@ export const getAllOrders = async (req, res) => {
         select: "phoneNumber state city country street postalCode houseNumber",
       });
 
-    res.json(orders);
+    return res.json(orders);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Something went wrong!" });
+    return res.status(500).json({ message: "Something went wrong!" });
+  }
+};
+
+export const getAllOrders = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const orders = await Order.find()
+      .select("userId totalAmount status paymentMethod paymentStatus createdAt")
+      .populate({
+        path: "productId",
+        select: "name",
+      })
+      .populate({
+        path: "addressId",
+        select: "phoneNumber state city country street postalCode houseNumber",
+      });
+
+    return res.json(orders);
+  } catch (error) {
+    return res.status(500).json({ message: "Something went wrong!" });
   }
 };
 
@@ -229,6 +250,44 @@ export const deleteOrder = async (req, res) => {
     await Order.deleteMany({ _id: orderIds, userId });
     res.json({ message: "Selected orders deleted successfully!" });
   } catch (error) {
+    res.status(500).json({ message: "Something went wrong!" });
+  }
+};
+
+export const updateOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+    const userId = req.user.id;
+
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    const order = await Order.findOne({ _id: orderId }).populate("userId");
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found!" });
+    }
+    const totalAmount = order.totalAmount;
+
+    order.status = status;
+    await order.save();
+
+    const emailSent = await mail(
+      order.userId.email,
+      status,
+      totalAmount,
+      order.paymentStatus
+    );
+
+    if (!emailSent) {
+      return res.status(500).json({ message: "Email sending failed!" });
+    }
+
+    res.json({ message: "Order status updated successfully" });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Something went wrong!" });
   }
 };
