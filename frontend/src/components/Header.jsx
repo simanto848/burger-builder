@@ -49,6 +49,15 @@ export default function Header() {
             >
               Add Burger
             </Link>
+            <Link
+              to="/add-coupon"
+              className="NavLink"
+              style={{
+                marginRight: "10px",
+              }}
+            >
+              Add Coupon
+            </Link>
             <button className="LogoutButton" onClick={logout}>
               Logout
             </button>

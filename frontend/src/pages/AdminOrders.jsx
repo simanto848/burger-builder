@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
-import { Table, Button, Modal, message, Select } from "antd";
+import { Table, Button, Modal, message, Select, Spin } from "antd";
 import moment from "moment";
 
 const { Option } = Select;
@@ -10,6 +10,7 @@ const AdminOrders = () => {
   const [updateModalVisible, setUpdateModalVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [updateStatus, setUpdateStatus] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchAdminOrders();
@@ -37,6 +38,7 @@ const AdminOrders = () => {
   };
 
   const handleUpdateStatus = async () => {
+    setLoading(true); // Set loading to true when update starts
     try {
       const response = await fetch(`/api/order/${selectedOrderId}/update`, {
         method: "PUT",
@@ -55,6 +57,7 @@ const AdminOrders = () => {
     } catch (error) {
       message.error(error.message || "Failed to update order status");
     } finally {
+      setLoading(false); // Set loading to false when update completes (success or failure)
       setUpdateModalVisible(false);
     }
   };
@@ -125,10 +128,11 @@ const AdminOrders = () => {
         >
           <Option value="pending">Pending</Option>
           <Option value="confirmed">Confirmed</Option>
-          <Option value="shipped">Shipped</Option>
+          <Option value="delivered">Delivered</Option>
           <Option value="cancelled">Cancelled</Option>
         </Select>
       </Modal>
+      <Spin spinning={loading} />
     </div>
   );
 };
