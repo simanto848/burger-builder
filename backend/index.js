@@ -1,5 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import { config } from "dotenv";
 import dbConfig from "./config/dbConfig.js";
 
@@ -15,6 +16,11 @@ import orderRoutes from "./routes/order.route.js";
 import userRoutes from "./routes/user.route.js";
 
 const app = express();
+const corsOptions = {
+  origin: ["https://burger-builder-frontend.onrender.com"],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+};
 
 app.use(express.json());
 app.use(cookieParser());
