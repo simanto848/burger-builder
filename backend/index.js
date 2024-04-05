@@ -24,6 +24,7 @@ const corsOptions = {
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors(corsOptions));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/product", productRoutes);
