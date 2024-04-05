@@ -17,13 +17,9 @@ import userRoutes from "./routes/user.route.js";
 
 const app = express();
 const corsOptions = {
-  origin: [
-    "https://burger-builder-0cyt.onrender.com",
-    "https://burger-builder-frontend.onrender.com",
-  ],
+  origin: ["https://burger-builder-frontend.onrender.com"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(express.json());
