@@ -7,6 +7,7 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: "https://burger-builder-0cyt.onrender.com",
+        // target: "http://localhost:5000",
         secure: false,
       },
     },
